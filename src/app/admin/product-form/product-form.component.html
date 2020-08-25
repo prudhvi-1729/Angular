@@ -1,0 +1,55 @@
+<div class="row">
+    <div class="col-md-6">
+        <form #f="ngForm" (ngSubmit)="save(f.value)">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input required #title="ngModel" [(ngModel)]="product.title" name="title" id="title" type="text" class="form-control">
+                <div class="alert alert-danger" *ngIf="title.touched && title.invalid">
+                    title is required
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">₹</span>
+                    <input required #price="ngModel" [(ngModel)]="product.price" name="price" id="price" type="text" pattern="(5000|([1-4]?[0-9]?[0-9]?[0-9]?))" class="form-control" >
+                </div>
+                <div class="alert alert-danger" *ngIf="price.touched && !price.valid">
+                    <div *ngIf="price.errors.required">price is required</div>
+                    <div *ngIf="price.errors.pattern">min price is 0</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select required #category="ngModel" [(ngModel)]="product.category" name="category" id="category" class="form-control">
+                    <option value=""></option>
+                    <option *ngFor="let c of categories$ | async" [value]="c.key">
+                        {{ c.data.name }}
+                    </option>
+                </select>
+                <div class="alert alert-danger" *ngIf="category.touched && category.invalid">
+                     category is required
+               </div>
+            </div>
+            <div class="form-group">
+                <label for="imageurl">Image URL</label>
+                <input required #imageurl="ngModel" [(ngModel)]="product.imageurl" name="imageurl" id="imageurl" type="text" pattern="[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?" class="form-control">
+                <div class="alert alert-danger" *ngIf="imageurl.touched && imageurl.invalid">
+                    <div *ngIf="imageurl.errors.required">imageurl is required</div>
+                    <div *ngIf="imageurl.errors.pattern">enter valid url</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" [disabled]="!f.valid" >Save</button>
+            <button type="button" class="btn btn-danger" (click)="delete()" [disabled]="!f.valid" >Delete</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div *ngIf="product.title" class="card" style="width: 18rem;">
+            <img [src]="product.imageurl" class="card-img-top" *ngIf="product.imageurl" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.title }}</h5>
+              <p class="card-text">{{ product.price | currency:'INR':true }}</p>
+            </div>
+          </div>
+    </div>
+</div>
