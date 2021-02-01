@@ -3,6 +3,7 @@ import { ProductService } from '../product.service';
 import { CategoryService } from '../category.service';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../models/product';
+import { ShoppingCartService } from '../shopping-cart.service';
 
 
 @Component({
@@ -15,7 +16,7 @@ products:Product[] = [];
 filteredProducts:Product[];
 categories$;
 category:string;
-  constructor(route: ActivatedRoute,productService: ProductService,categoryService: CategoryService) { 
+  constructor(public cartservice: ShoppingCartService,route: ActivatedRoute,productService: ProductService,categoryService: CategoryService) { 
      productService.getAll()
      .switchMap(products => {
        this.products = products;
@@ -29,5 +30,9 @@ category:string;
            this.products;
          });
      this.categories$= categoryService.getCategories();
+    }
+
+    addToCart(products:Product){
+      this.cartservice.addToCart(products);
     }
 }
